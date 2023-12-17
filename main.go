@@ -25,16 +25,8 @@ type Variable struct {
 }
 
 type VariableGroup struct {
-	CreatedBy   User                `json:"createdBy"`
-	CreatedOn   string              `json:"createdOn"`
-	Description string              `json:"description"`
-	ID          int                 `json:"id"`
-	IsShared    bool                `json:"isShared"`
-	ModifiedBy  User                `json:"modifiedBy"`
-	ModifiedOn  string              `json:"modifiedOn"`
-	Name        string              `json:"name"`
-	Type        string              `json:"type"`
-	Variables   map[string]Variable `json:"variables"`
+	Name      string              `json:"name"`
+	Variables map[string]Variable `json:"variables"`
 }
 
 type VariableGroupsResponse struct {
@@ -59,25 +51,40 @@ func CompareAndPrintDifference(group1Name string, group1Vars map[string]struct{}
 	}
 }
 
+// checkEnvOrFlag checks if the command-line flag is set; if not, it checks for an environment variable.
+// If neither is set, it logs a fatal error.
+func checkEnvOrFlag(flagValue, envVarName string) string {
+	if flagValue != "" {
+		return flagValue
+	}
+
+	envValue, exists := os.LookupEnv(envVarName)
+	if !exists {
+		log.Fatalf("No value was provided for '%s'.\n\nEither provide it as a command-line argument or set an environment variable called '%s'.\n\nExiting.", envVarName, envVarName)
+	}
+
+	return envValue
+}
+
 func main() {
 	var (
-		lib1 int
-		lib2 int
-		pat  string
+		lib1        int
+		lib2        int
+		patFlag     string
+		orgFlag     string
+		projectFlag string
 	)
 
 	flag.IntVar(&lib1, "lib1", 0, "Variable Library 1")
 	flag.IntVar(&lib2, "lib2", 0, "Variable Library 2")
-	flag.StringVar(&pat, "pat", "", "Personal Access Token")
+	flag.StringVar(&patFlag, "pat", "", "Personal Access Token")
+	flag.StringVar(&orgFlag, "org", "", "Azure Devops Organization")
+	flag.StringVar(&projectFlag, "project", "", "Azure DevOps Project")
 	flag.Parse()
 
-	if pat == "" {
-		var exists bool
-		pat, exists = os.LookupEnv("AZDO_PAT")
-		if !exists {
-			log.Fatal("No Personal Access Token was provided.\n\nEither provide it as a -pat argument or set an environment variable called 'AZDO_PAT'.\n\nExiting.")
-		}
-	}
+	pat := checkEnvOrFlag(patFlag, "AZDO_PAT")
+	org := checkEnvOrFlag(orgFlag, "AZDO_ORG")
+	project := checkEnvOrFlag(projectFlag, "AZDO_PROJECT")
 
 	url := fmt.Sprintf("https://dev.azure.com/%s/%s/_apis/distributedtask/variablegroups?groupIds=%d,%d&api-version=6.0-preview.2", org, project, lib1, lib2)
 	client := &http.Client{}
