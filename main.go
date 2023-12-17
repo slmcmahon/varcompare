@@ -1,30 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"fmt"
-	"io"
 	"log"
-	"net/http"
 
 	"github.com/slmcmahon/go-azdo"
 	slmcommon "github.com/slmcmahon/go-common"
 )
-
-type Variable struct {
-	Value string `json:"value"`
-}
-
-type VariableGroup struct {
-	Name      string              `json:"name"`
-	Variables map[string]Variable `json:"variables"`
-}
-
-type VariableGroupsResponse struct {
-	Count int             `json:"count"`
-	Value []VariableGroup `json:"value"`
-}
 
 func main() {
 	var (
@@ -55,30 +37,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	url := fmt.Sprintf("https://dev.azure.com/%s/%s/_apis/distributedtask/variablegroups?groupIds=%d,%d&api-version=6.0-preview.2", org, project, lib1, lib2)
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
+	response, err := azdo.GetVariableLibraries(pat, org, project, lib1, lib2)
 	if err != nil {
-		panic(err)
-	}
-
-	req.SetBasicAuth("", pat)
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
-
-	var response VariableGroupsResponse
-	err = json.Unmarshal([]byte(body), &response)
-	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	group1 := response.Value[0]

@@ -1,4 +1,6 @@
 github.com/slmcmahon/go-azdo v0.0.0-20231217132327-b7cf3a3fdbd8 h1:3hBHLvv5cD5SP/p4GON5GtqrMvnRuueiy59r87wxcYk=
 github.com/slmcmahon/go-azdo v0.0.0-20231217132327-b7cf3a3fdbd8/go.mod h1:GTYrzTkkqh6zla8Jlg6UHpnjS0PCjTdbRyXpJGketBo=
+github.com/slmcmahon/go-azdo v0.0.2 h1:pEgcELuTknQGgba6QfFOxTGGL61Nm1qg0Oiz5WpzYVs=
+github.com/slmcmahon/go-azdo v0.0.2/go.mod h1:GTYrzTkkqh6zla8Jlg6UHpnjS0PCjTdbRyXpJGketBo=
 github.com/slmcmahon/go-common v0.0.0-20231217131042-f828f497f218 h1:a9wu1xm/lIx/ZimpDFppmVuL4wAnT54n1Esr7uygnI4=
 github.com/slmcmahon/go-common v0.0.0-20231217131042-f828f497f218/go.mod h1:sW2hVjJVZNxeD16rmyXXecw/xb6Qbfa+xKACZIJbark=
