@@ -37,7 +37,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	response, err := azdo.GetVariableLibraries(pat, org, project, lib1, lib2)
+	ops := azdo.NewAZDOOperations(pat, org, project)
+
+	response, err := ops.GetVariableLibraries(lib1, lib2)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,6 +58,6 @@ func main() {
 		variablesInGroup2[name] = struct{}{}
 	}
 
-	azdo.CompareAndPrintDifference(group1.Name, variablesInGroup1, group2.Name, variablesInGroup2)
-	azdo.CompareAndPrintDifference(group2.Name, variablesInGroup2, group1.Name, variablesInGroup1)
+	ops.CompareAndPrintDifference(group1.Name, variablesInGroup1, group2.Name, variablesInGroup2)
+	ops.CompareAndPrintDifference(group2.Name, variablesInGroup2, group1.Name, variablesInGroup1)
 }
